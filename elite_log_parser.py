@@ -8,6 +8,7 @@ from terminaltables import AsciiTable
 from terminaltables import SingleTable 
 import threading
 import time
+import subprocess
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
 
@@ -543,8 +544,8 @@ def create_web_server():
     x.start()
 
 
-print("starting!")
-logs = glob.glob("C:\\Users\\ericd\\Saved Games\\Frontier Developments\\Elite Dangerous\\Journal.*.log")
+username = subprocess.check_output("echo %username%", shell=True).rstrip().decode("utf-8")
+logs = glob.glob(f"C:\\Users\\{username}\\Saved Games\\Frontier Developments\\Elite Dangerous\\Journal.*.log")
 logs.sort()
 last_log = logs.pop()
 
@@ -562,6 +563,7 @@ for log in logs:
             print(event)
 
 # Handle last log and loop
+# TODO: Handle a game restart without restarting the script
 did_first_clear = False
 for (line, at_end) in simple_tail(last_log, True):
     game_updated = False
