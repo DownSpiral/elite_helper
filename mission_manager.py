@@ -68,18 +68,19 @@ class MissionManager:
 
     def current_massacre_missions_table(self):
         mbf = self.missions_by_faction
-        missions_table = [["Mission giver", "# Total", "# Killed", "# Remaining"]]
+        missions_table = [["Mission giver", "# Remaining"]]
         missions_table_data = []
         for faction, missions in mbf.items():
             kill_count = sum([m.kill_count for m in missions])
             kill_progress = sum([m.kill_progress for m in missions])
-            kill_rem_individual = "-".join([str(m.kill_count - m.kill_progress) for m in missions if m.kill_count - m.kill_progress != 0])
+            kill_rem = kill_count - kill_progress
+            kill_rem_individual = "-".join([str(kill_rem) for m in missions if m.kill_count - m.kill_progress != 0])
             kill_remaining = "{:3} ({})".format(str(kill_count - kill_progress), kill_rem_individual)
-            missions_table_data.append([faction, kill_count, kill_progress, kill_remaining])
+            missions_table_data.append([faction, kill_remaining, kill_rem])
         
         if len(missions_table_data) > 0:
             if len(missions_table_data) > 1: missions_table_data.sort(reverse=True, key=lambda x: x[-1])
-            missions_table += missions_table_data
+            missions_table += [m[:-1] for m in missions_table_data]
             return AsciiTable(missions_table, " Massacre Missions ").table
         else:
             return None
