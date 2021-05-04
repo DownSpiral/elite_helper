@@ -15,7 +15,6 @@ class GameManager:
         "EscapeInterdiction",
         "RepairAll",
         "USSDrop",
-        "Missions",
         "WingLeave",
         "WingJoin",
         "WingAdd",
@@ -125,6 +124,7 @@ class GameManager:
     HANDLED_EVENTS = [
         "Music",
         "Bounty",
+        "Missions",
         "MissionAccepted",
         "MissionRedirected",
         "MissionCompleted",
@@ -207,18 +207,31 @@ class GameManager:
                 self.session_bounties.append(event)
                 # Update kill missions
                 self.mission_manager.handle_bounty_update(event["VictimFaction"])
+        
+        elif event_type == "Missions":
+            active_ids = [e["MissionID"] for e in event["Active"]]
+            self.total_missions = len(active_ids)
+            self.mission_manager.filter_by_active_ids(active_ids)
 
         elif event_type == "MissionAccepted":
             self.total_missions += 1
             if event["Name"] in ["Mission_Massacre", "Mission_MassacreWing"]: 
-                self.mission_manager.add_mission(Mission(event))
+                self.mission_manager.add_massacre_mission(Mission(event))
+            # elif event["Name"] in ["Mission_Assassinate_name"]:
+            #    self.mission_manager.add_assassinate_mission(Mission(event))
 
         elif event_type == "MissionRedirected":
-            self.mission_manager.handle_mission_redirect(event["MissionID"])
+            if event["Name"] in ["Mission_Massacre", "Mission_MassacreWing"]: 
+                self.mission_manager.handle_massacre_mission_redirect(event["MissionID"])
+            # elif event["Name"] in ["Mission_Assassinate_name"]:
+            #    self.mission_manager.handle_assassinate_mission_redirect(Mission(event))
 
         elif event_type in ["MissionCompleted", "MissionAbandoned", "MissionFailed"]:
             self.total_missions -= 1
-            self.mission_manager.remove_mission(event["MissionID"])
+            if event["Name"] in ["Mission_Massacre", "Mission_MassacreWing"]: 
+                self.mission_manager.remove_massacre_mission(event["MissionID"])
+            # elif event["Name"] in ["Mission_Assassinate_name"]:
+            #    self.mission_manager.remove_assassinate_mission(Mission(event))
 
         elif event_type == "Materials":
             self.material_manager.handle_materials_event(event)

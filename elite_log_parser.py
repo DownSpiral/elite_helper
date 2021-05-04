@@ -106,4 +106,5 @@ for (line, at_end) in simple_tail(last_log, True):
         did_first_clear = True
         clear()
         print(game_manager.text_summary())
+
         # time.sleep(0.15)
