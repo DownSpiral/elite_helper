@@ -215,23 +215,14 @@ class GameManager:
 
         elif event_type == "MissionAccepted":
             self.total_missions += 1
-            if event["Name"] in ["Mission_Massacre", "Mission_MassacreWing"]: 
-                self.mission_manager.add_massacre_mission(Mission(event))
-            # elif event["Name"] in ["Mission_Assassinate_name"]:
-            #    self.mission_manager.add_assassinate_mission(Mission(event))
+            self.mission_manager.add_mission(Mission(event))
 
         elif event_type == "MissionRedirected":
-            if event["Name"] in ["Mission_Massacre", "Mission_MassacreWing"]: 
-                self.mission_manager.handle_massacre_mission_redirect(event["MissionID"])
-            # elif event["Name"] in ["Mission_Assassinate_name"]:
-            #    self.mission_manager.handle_assassinate_mission_redirect(Mission(event))
+            self.mission_manager.handle_mission_redirect(event["MissionID"])
 
         elif event_type in ["MissionCompleted", "MissionAbandoned", "MissionFailed"]:
             self.total_missions -= 1
-            if event["Name"] in ["Mission_Massacre", "Mission_MassacreWing"]: 
-                self.mission_manager.remove_massacre_mission(event["MissionID"])
-            # elif event["Name"] in ["Mission_Assassinate_name"]:
-            #    self.mission_manager.remove_assassinate_mission(Mission(event))
+            self.mission_manager.remove_mission(event["MissionID"])
 
         elif event_type == "Materials":
             self.material_manager.handle_materials_event(event)

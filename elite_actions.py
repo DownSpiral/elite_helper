@@ -40,7 +40,7 @@ class EliteActions:
         self.prepare()
         # Open fighter menu
         self.ahk.key_press('3')
-        time.sleep(1)
+        time.sleep(1.5)
 
         # Reset selection and hover over fighter
         # self.ahk.key_press('q') # tab left
@@ -52,9 +52,9 @@ class EliteActions:
 
         # Select fighter to launch
         self.ahk.key_press('space')
-        time.sleep(1)
+        time.sleep(1.5)
         self.ahk.key_press('space')
-        time.sleep(1)
+        time.sleep(1.5)
         self.ahk.key_press('space')
         time.sleep(5)
         self.ahk.key_press('escape')
